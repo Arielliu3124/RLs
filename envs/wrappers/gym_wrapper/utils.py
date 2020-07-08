@@ -89,7 +89,7 @@ def build_env(config: Dict):
     env = BaseEnv(env)
 
     if env_type == 'atari':
-        assert 'NoFrameskip' in env.spec.id
+        # assert 'NoFrameskip' in env.spec.id, 'NoFrameskip not in env.spec.id'
         from common.yaml_ops import load_yaml
 
         default_config = load_yaml(f'{os.path.dirname(__file__)}/config.yaml')['atari']

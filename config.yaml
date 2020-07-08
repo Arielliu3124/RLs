@@ -46,12 +46,12 @@ gym:
         max_eval_episode: 100
     env:
         render_mode: random_1 # first last [list] random_[num] or all.
-        action_skip: true
+        action_skip: false
         skip: 4
-        obs_stack: true
+        obs_stack: false
         stack: 4
-        obs_grayscale: true
-        obs_resize: true
+        obs_grayscale: false
+        obs_resize: false
         resize: [84, 84]
         obs_scale: false
         noop: false

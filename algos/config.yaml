@@ -89,18 +89,18 @@ qs:
     init2mid_annealing_step: 100
 
 dqn: &dqn
-    lr: 5.0e-4
+    lr: 1.0e-4
     gamma: 0.99
     eps_init: 1
     eps_mid: 0.2
     eps_final: 0.01
     init2mid_annealing_step: 100
-    batch_size: 256
-    buffer_size: 100000
+    batch_size: 32
+    buffer_size: 10000
     assign_interval: 1000
     use_priority: false
-    n_step: true
-    hidden_units: [64, 64]
+    n_step: false
+    hidden_units: [512]
 
 ddqn: *dqn
 

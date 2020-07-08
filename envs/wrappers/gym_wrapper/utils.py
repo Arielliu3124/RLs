@@ -40,6 +40,16 @@ def make_atari(env, config: Dict):
     env = wrap_deepmind(env, config)
     return env
 
+def make_atari_BY571(env, config: Dict):
+    env = MaxAndSkipEnv(env, skip=int(config.get('skip', 4)))
+    if 'FIRE' in env.unwrapped.get_action_meanings():
+        env = FireResetEnv(env)
+    env = GrayResizeEnv(env, resize=bool(config.get('resize', True)), grayscale=bool(config.get('grayscale', True)),
+                    width=int(config.get('width', 84)), height=int(config.get('height', 84)))
+    if bool(config.get('frame_stack', True)):
+        env = StackEnv(env, stack=int(config.get('stack', 4)))
+    return env
+
 
 def wrap_deepmind(env, config: Dict):
     """Configure environment for DeepMind-style Atari.
@@ -83,7 +93,7 @@ def build_env(config: Dict):
         from common.yaml_ops import load_yaml
 
         default_config = load_yaml(f'{os.path.dirname(__file__)}/config.yaml')['atari']
-        env = make_atari(env, default_config)
+        env = make_atari_BY571(env, default_config)
     else:
         if gym_env_name.split('-')[0] == 'MiniGrid':
             env = gym_minigrid.wrappers.RGBImgPartialObsWrapper(env)  # Get pixel observations, or RGBImgObsWrapper

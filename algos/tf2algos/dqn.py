@@ -46,7 +46,7 @@ class DQN(make_off_policy_class(mode='share')):
         self.q_net = _q_net()
         self.q_target_net = _q_net()
         self.critic_tv = self.q_net.trainable_variables + self.other_tv
-        self.update_target_net_weights(self.q_target_net.weights, self.q_net.weights)
+        self.update_target_net_weights(self.q_target_net.weights, self.q_net.weights, 0.999)
         self.lr = self.init_lr(lr)
         self.optimizer = self.init_optimizer(self.lr)
 
@@ -54,6 +54,8 @@ class DQN(make_off_policy_class(mode='share')):
             model=self.q_net,
             optimizer=self.optimizer
         ))
+
+        self._i, self._last_act = 4, None
 
     def show_logo(self):
         self.recorder.logger.info('''
@@ -72,11 +74,17 @@ class DQN(make_off_policy_class(mode='share')):
         ''')
 
     def choose_action(self, s, visual_s, evaluation=False):
-        if np.random.uniform() < self.expl_expt_mng.get_esp(self.train_step, evaluation=evaluation):
-            a = np.random.randint(0, self.a_dim, self.n_agents)
+        if self._i == 4:
+            if np.random.uniform() < self.expl_expt_mng.get_esp(self.train_step, evaluation=evaluation):
+                a = np.random.randint(0, self.a_dim, self.n_agents)
+            else:
+                a, self.cell_state = self._get_action(s, visual_s, self.cell_state)
+                a = a.numpy()
+            self.last_act = a
+            self._i = 0
         else:
-            a, self.cell_state = self._get_action(s, visual_s, self.cell_state)
-            a = a.numpy()
+            self._i += 1
+            a = self.last_act
         return a
 
     @tf.function
@@ -91,7 +99,7 @@ class DQN(make_off_policy_class(mode='share')):
 
         def _update():
             if self.global_step % self.assign_interval == 0:
-                self.update_target_net_weights(self.q_target_net.weights, self.q_net.weights)
+                self.update_target_net_weights(self.q_target_net.weights, self.q_net.weights, 0.999)
         for i in range(self.train_times_per_step):
             self._learn(function_dict={
                 'train_function': self.train,

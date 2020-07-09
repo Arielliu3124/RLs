@@ -93,12 +93,12 @@ dqn: &dqn
     lr: 1.0e-4
     gamma: 0.99
     eps_init: 1
-    eps_mid: 0.2
-    eps_final: 0.01
-    init2mid_annealing_step: 100
+    eps_mid: 0.01
+    eps_final: 0.001
+    init2mid_annealing_step: 100000
     batch_size: 32
     buffer_size: 10000
-    assign_interval: 1000
+    assign_interval: 1
     use_priority: false
     n_step: false
     hidden_units: [512]

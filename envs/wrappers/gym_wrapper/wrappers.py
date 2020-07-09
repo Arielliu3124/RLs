@@ -113,15 +113,30 @@ class GrayResizeEnv(gym.ObservationWrapper):
         )
 
     def observation(self, obs):
-        if self._grayscale:
-            obs = cv2.cvtColor(obs, cv2.COLOR_RGB2GRAY)
-        if self._resize:
-            obs = cv2.resize(
-                obs, (self._width, self._height), interpolation=cv2.INTER_AREA
-            )
-        if self._grayscale:
-            obs = np.expand_dims(obs, -1)
-        return obs
+        # if self._grayscale:
+        #     obs = cv2.cvtColor(obs, cv2.COLOR_RGB2GRAY)
+        # if self._resize:
+        #     obs = cv2.resize(
+        #         obs, (self._width, self._height), interpolation=cv2.INTER_AREA
+        #     )
+        # if self._grayscale:
+        #     obs = np.expand_dims(obs, -1)
+        # return obs
+        return self.process(obs)
+
+    def process(self, frame):
+        if frame.size == 210 * 160 * 3:
+            img = np.reshape(frame, [210, 160, 3]).astype(np.float32)
+        elif frame.size == 250 * 160 * 3:
+            img = np.reshape(frame, [250, 160, 3]).astype(np.float32)
+        else:
+            assert False, "Unknown resolution."
+        img = img[:, :, 0] * 0.299 + img[:, :, 1] * 0.587 + \
+              img[:, :, 2] * 0.114
+        resized_screen = cv2.resize(img, (84, 110), interpolation=cv2.INTER_AREA)
+        x_t = resized_screen[18:102, :]
+        x_t = np.reshape(x_t, [84, 84, 1])
+        return x_t.astype(np.uint8)
 
 
 class ScaleEnv(gym.ObservationWrapper):

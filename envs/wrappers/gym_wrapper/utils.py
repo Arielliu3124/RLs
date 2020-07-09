@@ -42,8 +42,7 @@ def make_atari(env, config: Dict):
 
 def make_atari_BY571(env, config: Dict):
     env = MaxAndSkipEnv(env, skip=int(config.get('skip', 4)))
-    if 'FIRE' in env.unwrapped.get_action_meanings():
-        env = FireResetEnv(env)
+    env = FireResetEnv(env)
     env = GrayResizeEnv(env, resize=bool(config.get('resize', True)), grayscale=bool(config.get('grayscale', True)),
                     width=int(config.get('width', 84)), height=int(config.get('height', 84)))
     if bool(config.get('frame_stack', True)):

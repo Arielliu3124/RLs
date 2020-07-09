@@ -28,7 +28,7 @@ def init_variables(env):
 def gym_train(env, model, print_func,
               begin_train_step, begin_frame_step, begin_episode, render, render_episode,
               save_frequency, max_step_per_episode, max_train_episode, eval_while_train, max_eval_episode,
-              off_policy_step_eval_episodes,
+              off_policy_step_eval_episodes, off_policy_train_interval,
               policy_mode, moving_average_episode, add_noise2buffer, add_noise2buffer_episode_interval, add_noise2buffer_steps,
               off_policy_eval_interval, max_train_step, max_frame_step):
     """
@@ -69,7 +69,8 @@ def gym_train(env, model, print_func,
             state[i] = correct_new_state
 
             if policy_mode == 'off-policy':
-                model.learn(episode=episode, train_step=train_step, step=1)
+                if train_step % off_policy_train_interval == 0:
+                    model.learn(episode=episode, train_step=train_step)
                 train_step += 1
                 if train_step % save_frequency == 0:
                     model.save_checkpoint(train_step=train_step, episode=episode, frame_step=frame_step)

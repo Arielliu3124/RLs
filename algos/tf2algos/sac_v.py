@@ -152,7 +152,7 @@ class SAC_V(make_off_policy_class(mode='share')):
                 self.log_alpha.assign(tf.math.log(tf.cast(self.alpha_annealing(self.global_step.numpy()), tf.float32)))
             return td_error, summaries
 
-        for i in range(kwargs['step']):
+        for i in range(self.train_times_per_step):
             self._learn(function_dict={
                 'train_function': _train,
                 'update_function': lambda: self.update_target_net_weights(self.v_target_net.weights, self.v_net.weights, self.ployak),

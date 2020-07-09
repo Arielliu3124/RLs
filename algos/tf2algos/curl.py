@@ -220,7 +220,7 @@ class CURL(make_off_policy_class(mode='no_share')):
             )
             return (data,)
 
-        for i in range(kwargs['step']):
+        for i in range(self.train_times_per_step):
             self._learn(function_dict={
                 'train_function': _train,
                 'update_function': lambda: self.update_target_net_weights(

@@ -374,7 +374,7 @@ class Agent:
                         max_train_step=int(self.train_args['max_train_step']),
                         max_frame_step=int(self.train_args['max_frame_step']),
                         real_done=bool(self.train_args['real_done']),
-                    off_policy_train_interval=int(self.train_args['off_policy_train_interval'])
+                        off_policy_train_interval=int(self.train_args['off_policy_train_interval'])
                     )
             finally:
                 [model.close() for model in self.models]
